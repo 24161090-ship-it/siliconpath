@@ -1,8 +1,9 @@
 {
   "name": "siliconpath",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "private": true,
   "scripts": {
+    "verify:curriculum": "tsc --project tsconfig.test.json && node scripts/check-curriculum.mjs",
     "dev": "next dev --hostname 0.0.0.0",
     "build": "node scripts/prepare-toolchain.mjs && next build",
     "start": "next start",

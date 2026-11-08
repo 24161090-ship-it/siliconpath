@@ -1,5 +1,13 @@
 import {emptyLearning} from './learning-state';
 import type {WorkspaceData} from './types';
+/** Restoring JSON cannot restore a deleted Storage binary. Retain known deletion markers. */
+export function restoreWorkspace(current:WorkspaceData,backup:WorkspaceData):WorkspaceData{
+ const deleted={...backup.learning?.documentDeletions,...current.learning?.documentDeletions};
+ if(!Object.keys(deleted).length)return backup;
+ const l=backup.learning??emptyLearning();
+ const practice=Object.fromEntries(Object.entries(l.practice).map(([id,e])=>{const documentIds=e.documentIds.filter(key=>!deleted[key]);return [id,documentIds.length===e.documentIds.length?e:{...e,documentIds,selfVerified:false}]}));
+ return {...backup,learning:{...l,practice,documentDeletions:deleted,documents:l.documents.filter(doc=>!deleted[doc.id])}};
+}
 export function hasLearningData(d:WorkspaceData){return !!(d.profile.name||d.notes.length||d.projects.length||d.sessions.length||d.submissions.length||d.readLessons.length||d.applications.length||d.customLessons.length||d.customExercises.length||Object.keys(d.drafts).length||!!d.learning&&(Object.keys(d.learning.readings).length||d.learning.documents.length||d.learning.bookmarks.length||Object.keys(d.learning.practice).length)||d.tasks.some(t=>t.done||!t.id.startsWith('mission-')))}
 /** Explicit user-triggered import. Existing cloud records win ID conflicts. */
 export function mergeWorkspaces(current:WorkspaceData,incoming:WorkspaceData):WorkspaceData{

@@ -1,3 +1,12 @@
+# 2.2.1 — 2026-11-08
+
+- Added the next eight guided units in Digital Logic, parameterized RTL and Python OOP (32 of 66 units now deepened).
+- Put worked examples before pre-code reasoning and technical snippets.
+- Aligned four-bit ALU lesson/project opcodes with the executable ADD/SUB/AND/XOR contract.
+- Retained known document deletion markers during full JSON restoration.
+- Added reproducible local curriculum checks: twenty contracts, six behavioral mutations and ten focused topic reviews.
+- Verified the local reading → actual execution log → Self Verified → project evidence journey across reloads.
+
 # 2.2.0 — 2026-11-08
 
 - Deepened 24 core lessons with 48 worked derivations, 48 reasoning questions, optional hints/answers, selected diagrams, trace tables and SV examples.

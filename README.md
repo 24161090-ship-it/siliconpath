@@ -1,4 +1,4 @@
-# SiliconPath 2.2 — Guided Core Lessons
+# SiliconPath 2.2.1 — Curriculum Quality Review
 
 Personal engineering learning and internship preparation for Digital IC Design, RTL and Design Verification.
 
@@ -25,9 +25,9 @@ Cloud writes use optimistic revision checks. A conflicting write or failed reque
 
 Settings supports complete JSON backup/restore. Restore replaces the current workspace after confirmation. A backup is private learner data and must not be committed to this public repository.
 
-## Guided core lessons (2.2)
+## Guided core lessons (2.2.1)
 
-Twenty-four core units add original guided explanations, two step-by-step worked cases and two pre-code reasoning questions with optional hints/answers. Topics include FSM derivation, combinational/sequential RTL, sampling/debugging, verification planning, SV OOP/interfaces/tasks, transaction checking, SVA, coverage, constrained random, UVM, closure, FIFO/APB/UART. Selected units include ownership/architecture diagrams, timing/acceptance tables and SystemVerilog study snippets. The runner's twenty existing contracts remain unchanged; snippets requiring class/randomization/coverage features need a capable local simulator.
+Thirty-two core units add original guided explanations, two step-by-step worked cases and two pre-code reasoning questions with optional hints/answers. Topics include FSM derivation, combinational/sequential RTL, sampling/debugging, verification planning, SV OOP/interfaces/tasks, transaction checking, SVA, coverage, constrained random, UVM, closure, FIFO/APB/UART. Selected units include ownership/architecture diagrams, timing/acceptance tables and SystemVerilog study snippets. The runner's twenty existing contracts remain unchanged; snippets requiring class/randomization/coverage features need a capable local simulator.
 
 Twelve focused references from ChipVerify, Siemens Verification Academy and OpenTitan supplement the original forty. Publisher links were checked on 2026-11-08; some Academy chapters may require a publisher account. Reader practice also shows related project briefs and milestones.
 
@@ -86,3 +86,11 @@ Workspace schema remains version 1. The optional `learning` object adds readings
 ## Scope
 
 This release does not claim autonomous AI tutoring, OAuth GitHub synchronization, hosted shared portfolios, Google Calendar integration or community accounts. The existing public GitHub repository check is read-only. Personal content edits belong to the current workspace.
+
+## Curriculum quality checks
+
+Run `pnpm verify:curriculum` with Icarus Verilog (iverilog/vvp) and Python on PATH. Compile tests first if running the script directly: `pnpm exec tsc --project tsconfig.test.json`, then `node scripts/check-curriculum.mjs /path/to/qa-output`. Optional IVERILOG_BIN, VVP_BIN and PYTHON_BIN choose executables. With OSS CAD Suite on Windows, activate its bin and lib paths in the current shell; do not mix incompatible MSYS runtime libraries. Results are local files and never update cloud progress.
+
+The check runs all twenty executable references, rejects six behavioral mutations, and reviews ten core topics. It includes exhaustive ten-bit FSM streams (10,240 observations), counter widths 1/3/4/5 and all 65,536 eight-bit signed addition pairs. SVA is checked through a sampled discrete model; functional coverage examples are checked through a Python model. These are not native temporal-SVA or covergroup execution claims. Full cloud execution and simultaneous multi-device edits require separate authenticated checks.
+
+Reader order is explanation → worked examples → pre-code reasoning → technical view. The four-bit ALU lesson and project now share the exact ADD/SUB/AND/XOR op encoding used by the existing contract. Full JSON restore retains known document deletion markers as well as device-to-cloud merge. Binary documents still require separate original-file backups.

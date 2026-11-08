@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {initialData,validateBackup} from '../lib/model';
 import {emptyLearning,blankReading,blankEvidence,toggleUnitRead,forgetDocument,ownedDocumentPath} from '../lib/learning-state';
 import {removeOwnedDocument} from '../lib/document-storage';
-import {mergeWorkspaces} from '../lib/workspace-merge';
+import {mergeWorkspaces,restoreWorkspace} from '../lib/workspace-merge';
 import {studyUnits} from '../lib/study-units';
 import {resources} from '../lib/resources';
 import {exercises} from '../lib/content';
@@ -25,7 +25,7 @@ test('partial siblings clear a stale legacy parent instead of falsely completing
 test('deleted documents and their evidence links cannot reappear through old backups',()=>{
  const data=initialData();data.learning=emptyLearning();const doc={id:'file',name:'Trace',source:'Own',subject:'FIFO',added:'2026-11-08',path:'owner/file.pdf',mime:'application/pdf',size:100};data.learning.documents=[doc];data.learning.practice.fifo={...blankEvidence(),selfVerified:true,documentIds:['file']};data.learning.practice.other={...blankEvidence(),selfVerified:true,log:'Keep separate evidence'};
  const removed=forgetDocument(data,'file');assert.equal(removed.learning!.documents.length,0);assert.equal(removed.learning!.practice.fifo.selfVerified,false);assert.deepEqual(removed.learning!.practice.fifo.documentIds,[]);assert.equal(removed.learning!.practice.other.selfVerified,true);assert.equal(data.learning.documents.length,1);
- assert.ok(validateBackup(removed));for(const merged of [mergeWorkspaces(removed,data),mergeWorkspaces(data,removed)]){assert.equal(merged.learning!.documents.length,0);assert.deepEqual(merged.learning!.practice.fifo.documentIds,[]);assert.equal(merged.learning!.practice.fifo.selfVerified,false)}
+ assert.ok(validateBackup(removed));for(const merged of [mergeWorkspaces(removed,data),mergeWorkspaces(data,removed),restoreWorkspace(removed,data)]){assert.equal(merged.learning!.documents.length,0);assert.deepEqual(merged.learning!.practice.fifo.documentIds,[]);assert.equal(merged.learning!.practice.fifo.selfVerified,false)}
  assert.equal(validateBackup({...removed,learning:{...removed.learning,documentDeletions:{bad:'not-a-date'}}}),false);
 });
 test('Storage removal rejects wrong owners and silent RLS no-ops',async()=>{
@@ -45,8 +45,8 @@ test('Storage removal rejects wrong owners and silent RLS no-ops',async()=>{
  await assert.rejects(()=>removeOwnedDocument(fake({id:'owner'},[],{message:'Network failed'}),'owner/file.pdf'),/Network failed/);
  await removeOwnedDocument(fake({id:'owner'},['owner/file.pdf']),'owner/file.pdf');assert.equal(calls,3);
 });
-test('24 guided units have distinct derivations, reasoning questions and resolved resources',()=>{
- const deep=studyUnits.filter(u=>u.depth);assert.equal(deep.length,24);
+test('32 guided units have distinct derivations, reasoning questions and resolved resources',()=>{
+ const deep=studyUnits.filter(u=>u.depth);assert.equal(deep.length,32);
  for(const unit of deep){const depth=unit.depth!;assert.equal(depth.cases.length,2,unit.id);assert.equal(depth.questions.length,2,unit.id);assert.ok(depth.minutes>=45);for(const c of depth.cases){assert.ok(c.steps.length>=3,unit.id);assert.equal(new Set(c.steps).size,c.steps.length)}for(const q of depth.questions)assert.ok(q.prompt&&q.hint&&q.answer,unit.id);for(const id of depth.resources)assert.ok(resources.some(r=>r.id===id),id)}
  assert.equal(resources.length,52);assert.equal(exercises.length,94);
 });
