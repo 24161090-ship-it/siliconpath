@@ -1,3 +1,11 @@
+# 2.2.0 — 2026-11-08
+
+- Deepened 24 core lessons with 48 worked derivations, 48 reasoning questions, optional hints/answers, selected diagrams, trace tables and SV examples.
+- Added twelve focused SV/DV publisher references and related project briefs in Reader practice.
+- Fixed parent read markers when a child is unmarked; preserved notes/bookmarks and mastery rules.
+- Added named-file delete confirmation, owner-only Storage removal, strict server confirmation, evidence detachment and deletion tombstones in device merges.
+- Added idempotent migration 004 and five focused regression tests. Existing runner contracts and exercise/project IDs remain unchanged.
+
 # 2.1.0 — Learning Content & Resource System (2026-11-08)
 
 - Added a persistent Learning Reader with 66 focused units, source references, practice links and personal notes.

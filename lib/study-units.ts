@@ -1,3 +1,4 @@
+import {studyDepth} from './study-depth';
 import type {StudyUnit} from './learning-types';
 import type {Track} from './types';
 const parentTracks:Record<string,Track>={digital:'Foundation',numbers:'Foundation',combinational:'Foundation',sequential:'Foundation','fsm-theory':'Foundation',architecture:'Foundation',linux:'Foundation',git:'Foundation',verilog:'RTL Design','comb-rtl':'RTL Design','seq-rtl':'RTL Design','fsm-rtl':'RTL Design',simulation:'RTL Design',python:'Programming','python-oop':'Programming',automation:'Programming',cpp:'Programming',methodology:'Design Verification',sv:'Design Verification',assertions:'Design Verification',random:'Design Verification',uvm:'Design Verification','uart-lesson':'Advanced Applications','fifo-lesson':'Advanced Applications','apb-lesson':'Advanced Applications',riscv:'Advanced Applications'};
@@ -400,6 +401,6 @@ u('cpp-reference-models','C++ Host Models and Resource Ownership','cpp',['python
 'Translate a width-limited Python predictor into C++ and compare shared vectors, including overflow boundaries and invalid inputs.',
 'C++ cần quy định độ rộng và lifetime rõ; không dùng signed overflow để mô phỏng wrap của phần cứng.')
 
-].sort((a,b)=>['Foundation','RTL Design','Programming','Design Verification','Advanced Applications'].indexOf(a.track)-['Foundation','RTL Design','Programming','Design Verification','Advanced Applications'].indexOf(b.track));
+].map(unit=>{const depth=studyDepth[unit.id];return depth?{...unit,depth,minutes:depth.minutes,resourceIds:[...new Set([...depth.resources,...unit.resourceIds])]}:unit}).sort((a,b)=>['Foundation','RTL Design','Programming','Design Verification','Advanced Applications'].indexOf(a.track)-['Foundation','RTL Design','Programming','Design Verification','Advanced Applications'].indexOf(b.track));
 export const courseTracks=[{track:'Foundation',title:'Digital Logic Foundations'},{track:'RTL Design',title:'Verilog RTL Design'},{track:'Programming',title:'Programming for Verification'},{track:'Design Verification',title:'Design Verification'},{track:'Advanced Applications',title:'Advanced Verification Projects'}] as const;
 export function unitForParent(id:string){return studyUnits.find(u=>u.parentId===id)}

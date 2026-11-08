@@ -1,4 +1,4 @@
-# SiliconPath 2.1 — Learning Content & Resources
+# SiliconPath 2.2 — Guided Core Lessons
 
 Personal engineering learning and internship preparation for Digital IC Design, RTL and Design Verification.
 
@@ -9,7 +9,7 @@ Personal engineering learning and internship preparation for Digital IC Design, 
 
 The original 26 roadmap modules and all 82 existing exercises retain their IDs. Sixty-six focused study units cover the requested five tracks with original explanations, worked examples, diagrams/tables/formulas where relevant, pitfalls, prerequisites and linked practice. The library now contains 94 exercises, including twelve selected design/calculation/verification-planning challenges. Twenty existing exercises retain executable tests.
 
-Learning Reader includes Theory, References, Practice and Notes; course outline, section TOC, saved position, search, bookmarks, reading mode, previous/next navigation and optional Vietnamese explanations. Reading progress records position, not understanding. Forty curated resources link to verified publisher destinations with title, organization, section, level, estimate and review date. External publisher content opens at the original site.
+Learning Reader includes Theory, References, Practice and Notes; course outline, section TOC, saved position, search, bookmarks, reading mode, previous/next navigation and optional Vietnamese explanations. Reading progress records position, not understanding. Fifty-two curated resources link to verified publisher destinations with title, organization, section, level, estimate and review date. External publisher content opens at the original site.
 
 Sixteen project learning paths provide technical specifications, architecture guidance, milestones, verification requirements, expected deliverables, pitfalls, related theory/exercises/resources and an English evidence outline. The Knowledge Vault adds Code Snippet, Formula and Project Documentation note types. Dashboard suggestions use actual reading and submission history.
 
@@ -25,11 +25,19 @@ Cloud writes use optimistic revision checks. A conflicting write or failed reque
 
 Settings supports complete JSON backup/restore. Restore replaces the current workspace after confirmation. A backup is private learner data and must not be committed to this public repository.
 
+## Guided core lessons (2.2)
+
+Twenty-four core units add original guided explanations, two step-by-step worked cases and two pre-code reasoning questions with optional hints/answers. Topics include FSM derivation, combinational/sequential RTL, sampling/debugging, verification planning, SV OOP/interfaces/tasks, transaction checking, SVA, coverage, constrained random, UVM, closure, FIFO/APB/UART. Selected units include ownership/architecture diagrams, timing/acceptance tables and SystemVerilog study snippets. The runner's twenty existing contracts remain unchanged; snippets requiring class/randomization/coverage features need a capable local simulator.
+
+Twelve focused references from ChipVerify, Siemens Verification Academy and OpenTitan supplement the original forty. Publisher links were checked on 2026-11-08; some Academy chapters may require a publisher account. Reader practice also shows related project briefs and milestones.
+
+Mark-as-read now recalculates the parent module in both directions. Removing a child's marker removes a stale parent marker without changing notes/bookmarks or assessment results.
+
 ## Local practice and private documents
 
 Every exercise has related theory, design-before-code guidance and a persistent seven-item completion checklist. Source/repository links, local command/log, notes, mistakes, lessons learned and private waveform/document attachments form the evidence record. A complete checklist plus evidence can be explicitly confirmed as **Completed – Self Verified**. That confirmation creates a clearly labeled self-assessed history record and never creates an automated pass or changes legacy mastery rules. Editing evidence/checklists or the source draft clears confirmation. Knowledge-check results are labeled separately from executed code results.
 
-Apply `supabase/migrations/003_learning_documents.sql` once for the private `learning-documents` bucket and owner-folder SELECT/INSERT policies. Upload requires sign-in, allows PDF/PNG/JPEG/plain-text formats up to 10 MB and verifies basic file signatures. Metadata stays in the workspace; originals stay in private Storage. Fifty documents per workspace are supported. PDF/image/text preview downloads through the authenticated storage client, uses a local object URL and revokes it when closed. A workspace JSON backup contains metadata, not document binaries; download originals separately for an independent archive. No third-party book is copied or republished.
+Apply `supabase/migrations/003_learning_documents.sql` once for the private `learning-documents` bucket and owner-folder SELECT/INSERT policies. Upload requires sign-in, allows PDF/PNG/JPEG/plain-text formats up to 10 MB and verifies basic file signatures. Metadata stays in the workspace; originals stay in private Storage. Fifty documents per workspace are supported. Apply `supabase/migrations/004_delete_learning_documents.sql` for owner-folder DELETE access. In My documents, Delete opens a named-file confirmation. Only a server-confirmed Storage removal removes metadata; failure preserves the entry. Related evidence links are detached and self-verification is cleared, while original submission history is retained. Deletion tombstones prevent deleted metadata from returning through device-to-cloud merge. JSON backups do not restore deleted binaries. PDF/image/text preview downloads through the authenticated storage client, uses a local object URL and revokes it when closed. A workspace JSON backup contains metadata, not document binaries; download originals separately for an independent archive. No third-party book is copied or republished.
 
 ## Executable practice
 
