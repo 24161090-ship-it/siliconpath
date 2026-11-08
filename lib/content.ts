@@ -1,3 +1,5 @@
+import {additionalExercises} from './content-expansion';
+import {projectPaths} from './project-library';
 import type {Lesson,Exercise,Track} from './types';
 import {buildCurriculum} from './curriculum';
 export const tracks:Track[]=['Foundation','RTL Design','Programming','Design Verification','Advanced Applications'];
@@ -45,15 +47,10 @@ lesson('fifo-lesson','FIFO & memory controller verification','Advanced Applicati
 lesson('apb-lesson','APB / AXI protocol verification','Advanced Applications',['methodology','assertions'],'## Handshakes define accepted transfers\nAPB separates setup and access phases. Control must remain stable through wait states. Check transfer completion only on the defined handshake.\n\nAXI has independent channels, IDs and burst rules; model each channel explicitly and verify ordering and backpressure. Do not apply APB assumptions to AXI.','apb'),
 lesson('riscv','RISC-V & SoC verification','Advanced Applications',['architecture','uvm'],'## Compare architectural behavior\nChoose the exact ISA subset and privileged features in scope. A reference model compares retired instructions and architectural state.\n\nTest arithmetic, branches, memory operations, exceptions and illegal instructions. Document alignment and memory-map behavior.\n\nAt SoC level, verify integration, reset sequencing, interrupts and end-to-end transactions. Collect coverage tied to requirements.')
 ];
-export const projectTemplates=[
-{title:'8-bit ALU Design & Verification',description:'Build an arithmetic logic unit with an independent reference model and exhaustive directed tests.',level:'Mini project',tags:'Digital Logic · Verilog',days:'1–3 days'},
-{title:'UART Verification with Cocotb',description:'Verify an 8N1 serial interface with reusable drivers, monitors and a byte-level scoreboard.',level:'Portfolio project',tags:'Python · Cocotb',days:'3–4 weeks'},
-{title:'Synchronous FIFO Verification',description:'Prove ordering and boundary behavior with assertions, a reference queue and a coverage plan.',level:'Intermediate project',tags:'SystemVerilog · SVA',days:'1–2 weeks'},
-{title:'APB Slave Verification',description:'Create a register model, protocol checks and a regression covering wait states and resets.',level:'Portfolio project',tags:'APB · Scoreboard',days:'3–5 weeks'},
-{title:'RISC-V RV32I Verification',description:'Compare instruction retirement to a reference model and document ISA-level coverage.',level:'Capstone project',tags:'RISC-V · Architecture',days:'6–8 weeks'},
-{title:'UVM Verification Environment',description:'Build a reusable agent, sequence library and scoreboard with a requirements-based coverage plan.',level:'Portfolio project',tags:'UVM · Coverage',days:'4–6 weeks'}
-];
+export const projectTemplates:{title:string;description:string;level:string;tags:string;days:string}[]=projectPaths.map(p=>({title:p.title,description:p.overview,level:p.difficulty+' project',tags:p.units.slice(0,3).map(x=>x.replaceAll('-',' ')).join(' · '),days:p.duration}));
 export const projectChecklist=['Architecture & requirements','Source code & README','Test plan & corner cases','Simulation evidence & results','Coverage & known limitations','Lessons learned & demo'];
 export const interviewQuestions=[{id:'i1',track:'Digital Logic',question:'Explain the difference between a latch and a flip-flop.',rubric:'Mention level sensitivity vs edge triggering, timing implications, and a concrete use case.'},{id:'i2',track:'Verilog',question:'When would you use blocking and nonblocking assignments?',rubric:'Explain combinational vs sequential modeling and simulator scheduling; give a race example.'},{id:'i3',track:'Verification',question:'How would you verify a FIFO?',rubric:'Describe an independent queue, boundary scenarios, accepted transfers, reset, assertions and coverage.'},{id:'i4',track:'Architecture',question:'Explain a pipeline data hazard and one way to resolve it.',rubric:'Identify a dependency, forwarding or stalling, and the effect on correctness and throughput.'},{id:'i5',track:'Behavioral',question:'Describe a difficult bug you investigated.',rubric:'Use situation, task, action and result. Include how you reproduced the bug and verified the fix.'},{id:'i6',track:'Technical English',question:'Walk me through your most recent verification project in English.',rubric:'State the problem, architecture, verification strategy, actual results and limitations.'}];
 
-export const {lessons,exercises}=buildCurriculum(baseLessons,baseExercises);
+const curriculum=buildCurriculum(baseLessons,baseExercises);
+export const lessons=curriculum.lessons;
+export const exercises=[...curriculum.exercises,...additionalExercises];

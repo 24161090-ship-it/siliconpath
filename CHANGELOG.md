@@ -1,3 +1,12 @@
+# 2.1.0 — Learning Content & Resource System (2026-11-08)
+
+- Added a persistent Learning Reader with 66 focused units, source references, practice links and personal notes.
+- Added 40 curated publisher resources, private PDF/image/log uploads and account-bound document viewing.
+- Preserved all existing content IDs; added 12 selected manual challenges, explicit evidence/checklists and separate self-verified completion.
+- Added 16 detailed project paths, English evidence outlines, new vault note types and history-based dashboard suggestions.
+- Kept workspace version 1 with optional additive fields, owner-only Storage migration and unchanged runner/assessment contracts.
+- Expanded compatibility/graph/backup/manual-status tests.
+
 # SiliconPath 2.0 — 2026-11-08
 
 ## Learning and assessment
