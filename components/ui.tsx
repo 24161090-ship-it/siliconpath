@@ -1,0 +1,16 @@
+'use client';
+import {X,ArrowUpRight,Plus} from 'lucide-react';
+import type {WorkspaceData} from '@/lib/types';
+import type {ReactNode,ButtonHTMLAttributes} from 'react';
+export type DataProps={data:WorkspaceData;update:(fn:(d:WorkspaceData)=>WorkspaceData)=>void;notify:(s:string)=>void};
+export function Button({children,variant='primary',className='',...props}:ButtonHTMLAttributes<HTMLButtonElement>&{variant?:'primary'|'secondary'|'ghost'}){return <button className={`btn ${variant} ${className}`} {...props}>{children}</button>}
+export function Badge({children,color='mint'}:{children:ReactNode;color?:string}){return <span className={`badge ${color}`}>{children}</span>}
+export function Meter({value,color}:{value:number;color?:string}){return <div className="meter"><div style={{width:`${Math.max(0,Math.min(100,value))}%`,background:color}}/></div>}
+export function Empty({icon, title,children,action}:{icon?:ReactNode;title:string;children:ReactNode;action?:ReactNode}){return <div className="empty">{icon&&<div className="empty-icon">{icon}</div>}<h3>{title}</h3><p>{children}</p>{action}</div>}
+export function SectionTitle({eyebrow,title,description,action}:{eyebrow?:string;title:string;description?:string;action?:ReactNode}){return <div className="page-heading"><div>{eyebrow&&<div className="eyebrow">{eyebrow}</div>}<h1>{title}</h1>{description&&<p>{description}</p>}</div>{action}</div>}
+export function PanelHeading({title,sub,action}:{title:string;sub?:string;action?:ReactNode}){return <div className="panel-heading"><div><h2>{title}</h2>{sub&&<p>{sub}</p>}</div>{action}</div>}
+export function Modal({title,children,onClose,wide=false}:{title:string;children:ReactNode;onClose:()=>void;wide?:boolean}){return <div className="modal-backdrop" onClick={onClose}><section aria-label={title} role="dialog" aria-modal="true" className={`modal ${wide?'wide':''}`} onClick={e=>e.stopPropagation()} onKeyDown={e=>{if(e.key==='Escape')onClose();if(e.key==='Tab'){const controls=Array.from(e.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled),input,select,textarea,a[href],[tabindex="0"]'));const first=controls[0],last=controls.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}}}><header><h2>{title}</h2><button autoFocus className="icon-btn" onClick={onClose} aria-label="Close dialog"><X size={20}/></button></header>{children}</section></div>}
+export function Field({label,children}:{label:string;children:ReactNode}){return <label className="field"><span>{label}</span>{children}</label>}
+export function TextLink({children,onClick}:{children:ReactNode;onClick:()=>void}){return <button className="text-link" onClick={onClick}>{children}<ArrowUpRight size={15}/></button>}
+export function AddButton({onClick,children}:{onClick:()=>void;children:ReactNode}){return <Button onClick={onClick}><Plus size={16}/>{children}</Button>}
+export function download(name:string,content:string,type='application/json'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
