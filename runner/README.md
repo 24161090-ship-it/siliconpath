@@ -1,11 +1,19 @@
-# Isolated execution service contract
+# SiliconPath isolated toolchain
 
-The Vercel application never evaluates, compiles or executes user code. The configured service must be independently secured and authenticated with the server-only RUNNER_TOKEN.
+The deployed Next.js API authenticates the Supabase user, reserves a database-enforced quota slot, then runs only registered educational contracts in a disposable Vercel Sandbox microVM. User code never runs inside the web application process.
 
-Accept POST JSON with `userId`, `exerciseId`, `language`, `source`. Permit only the registered exercise IDs and fixed languages. Fetch testbenches from a trusted server-owned registry. Never accept a command, filesystem path, testbench or runner image from the browser.
+## Toolchain
 
-Required controls: per-user/IP quotas, bounded queue and concurrency, non-root disposable container/VM, read-only base filesystem, capped temporary disk, no network egress, no host mounts, no privileged mode, CPU/RAM/process limits, output truncation, wall-clock timeout and destruction after every job. The service must rate-limit requests before allocating compute.
+Ubuntu 26.04; Icarus Verilog 12.0; Verilator 5.032; Python 3.14; Cocotb 2.1.0; make 4.4.1. Bootstrap trusted packages with restricted package-repository egress, then set deny-all before snapshotting. Evaluations always use deny-all, one vCPU, a 45-second lifetime and bounded subprocesses. No deployment credentials are copied into the VM.
 
-Return `200 {"passed":boolean,"output":"actual compiler and test summary"}` for completed evaluations. Use non-2xx for queue, infrastructure and authentication failures. These must not be interpreted as failed learner assessments. The Next.js proxy times out after 20 seconds and clips returned logs to 50,000 characters.
+Set RUNNER_PROVIDER=vercel and RUNNER_SNAPSHOT_ID in Vercel. The deployment uses built-in OIDC. The build preparation script converts an expiring bootstrap into a non-expiring snapshot; point the environment variable at that stable snapshot after the initial deployment. See the root README for provisioning.
 
-For manual local practice: download source from the lab, execute it with a local Icarus Verilog/Verilator/Python/Cocotb toolchain and paste the command and result into evidence. These records stay Self-assessed and do not become automated passes.
+## Contracts and results
+
+lib/grader-cases.ts owns the twenty fixed contracts. GET /api/run exposes capabilities; GET /api/run?exercise=mux2 exposes the educational testbench. POST accepts exerciseId, source, language and an optional iverilog, verilator or cocotb engine. Cocotb currently supports mux2. Python contracts always use Python.
+
+A successful evaluation returns passed, actual output, engine, exact-source SHA-256, run ID, test summaries and a bounded VCD when produced. Infrastructure failures return non-2xx and assign no learning result. These public course contracts are not adversarial certification tests. Open-ended projects remain evidence-based, self-reported work.
+
+## Verification
+
+All twenty reference contracts passed in the prepared toolchain. Intentionally incorrect RTL and Python were rejected. Additional mux2 regressions passed with Verilator and Cocotb. The application test suite checks assessment reachability, backup preservation, import behavior and VCD parsing.

@@ -1,31 +1,32 @@
 {
   "name": "siliconpath",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
-    "build": "next build",
+    "build": "node scripts/prepare-toolchain.mjs && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "tsc --project tsconfig.test.json && node --test .test-build/tests/model.test.js"
   },
   "dependencies": {
+    "@monaco-editor/react": "4.7.0",
+    "@supabase/supabase-js": "2.119.0",
+    "@vercel/sandbox": "3.9.1",
+    "katex": "0.19.1",
+    "lucide-react": "1.70.0",
     "next": "16.4.5",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "lucide-react": "1.70.0",
-    "@supabase/supabase-js": "2.119.0",
-    "@monaco-editor/react": "4.7.0",
     "react-markdown": "10.1.0",
-    "remark-math": "6.0.0",
     "rehype-katex": "7.0.1",
-    "katex": "0.19.1"
+    "remark-math": "6.0.0"
   },
   "devDependencies": {
-    "typescript": "7.0.2",
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0"
+    "@types/react-dom": "19.3.0",
+    "typescript": "7.0.2"
   },
   "packageManager": "pnpm@11.25.0"
 }

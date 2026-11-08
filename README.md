@@ -1,77 +1,66 @@
-# SiliconPath
+# SiliconPath 2.0
 
-A personal engineering learning workspace for Digital IC Design, Design Verification and FPGA, with an internship preparation goal for 2027.
+Personal engineering learning and internship preparation for Digital IC Design, RTL and Design Verification.
 
-## Included
+- **Live:** https://siliconpath-tau.vercel.app
+- **Source:** https://github.com/24161090-ship-it/siliconpath
 
-- Responsive dark/light workspace, global search and an evidence-based dashboard.
-- 26 readable lessons across five roadmap tracks; prerequisites and explicit mastery rules.
-- 12 exercises with specifications, test cases, progressive hints and explanations.
-- Automatically scored knowledge checks; Monaco code editor, autosaved drafts, submission history, personal notes and self-assessed evidence.
-- Project templates, evidence checklists, public GitHub repository inspection, Markdown README export and standalone HTML portfolio export.
-- Markdown/LaTeX knowledge vault, mistake journals and flashcards.
-- Weekly planner, rescheduling, real study-session logs and a persistent Pomodoro timer.
-- Analytics based on saved activity, application tracking, interview rubrics and a printable English CV (use Save as PDF in the browser).
-- Personal content editor with JSON validation; full workspace backup/restore.
-- Optional Supabase email-link authentication, per-user cloud storage, row-level security and optimistic concurrency checks.
+## What works
 
-## Current deployment mode
+26 expanded lessons across five tracks, each with a reachable assessment path. The library contains 82 exercises: lesson checkpoints, realistic debugging scenarios, coding contracts and evidence-based verification tasks. Twenty exercises have executable tests.
 
-Without Supabase environment variables, the application runs in **device mode**. Records persist in this browser's localStorage. They do not synchronize across devices, private browsing or cleared browser data. The UI labels this mode. Export backups regularly.
+The learning loop is read → checkpoint → practical test where required → inspect the actual result → document mistakes → build project evidence. Mastered means the node’s specified course assessments are complete; it is not a claim of professional competence in the entire topic. Historical v1 data remains intact, but expanded assessment requirements can require new work.
 
-This release implements the learning MVP and personal project/career workflows. It does **not** claim all five phases of the original vision are complete. Google sign-in, hosted attachment storage, autonomous AI tutoring, a production simulation cluster, OAuth GitHub account synchronization and hosted public portfolios remain future integrations. Public GitHub inspection is read-only; exporting an HTML portfolio does not publish it automatically.
+The workspace also includes a weekly planner, Pomodoro/session history, Markdown/LaTeX notes, mistake journal, flashcards, skill analytics, engineering project workspaces, CV/portfolio export, interview rubrics, an application tracker and a November 2026–June 2027 development plan.
 
-## Local development
+## Authentication and persistence
 
-Requires Node.js 22+ and pnpm 11+. Dependencies are pinned with pnpm-lock.yaml.
+Supabase email-link sign-in stores an authenticated workspace per user. RLS permits only the owner to read/write their workspace. Local device mode remains usable without an account. Device and authenticated workspaces are separate; the UI offers an explicit device import after sign-in. Distinct records combine; matching IDs preserve existing cloud records.
+
+Cloud writes use optimistic revision checks. A conflicting write or failed request pauses sync and retains the local copy. Export a backup before reloading to reconcile. Wait for **Synced to cloud** before switching devices. This is not collaborative real-time editing.
+
+Settings supports complete JSON backup/restore. Restore replaces the current workspace after confirmation. A backup is private learner data and must not be committed to this public repository.
+
+## Executable practice
+
+`POST /api/run` authenticates a Supabase bearer session, validates the request and reserves a quota slot through a PostgreSQL RPC before creating a disposable Vercel Sandbox microVM. User code never executes in the Next.js process.
+
+- One vCPU / 2 GB VM; no network egress during evaluation; no host mounts or deployment credentials injected into the VM.
+- 45-second VM lifetime, bounded compiler/simulator commands, file/output limits and guaranteed stop in `finally`.
+- Source request limit: 100 KB. Per-account limit: 20 reservations/day, 45-second cooldown. Project-wide cap: 100/day, protected by an advisory transaction lock.
+- Fixed server-owned tests. A zero exit code alone is insufficient: the harness completion marker must be present. Infrastructure errors do not assign an assessment result.
+- Icarus Verilog 12.0, Verilator 5.032 and Python. The mux2 contract additionally supports Cocotb 2.1.0 with Icarus.
+- Results include exact source SHA-256, run ID, engine and actual output. VCD is retained up to 300 KB per evaluation; manually opened VCDs may be up to 1 MB.
+
+Tests are visible educational contracts, not secret certification tests. Open-ended verification exercises without a registered executable contract use clearly labeled evidence review. Self-assessed results never count as automated passes. Project coverage/checklists are also self-reported.
+
+## Run locally
+
+Node.js 22+ and pnpm 11.25.0 are supported.
 
 ```sh
-pnpm install
-pnpm dev
+pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm dev
 ```
 
-## Enable cloud authentication and persistence
+Set public Supabase URL/key in `.env.local`. Never use a service-role key in browser code. Local simulation additionally needs a valid Vercel OIDC context from a linked project; without that context, use the deployed application for execution.
 
-1. Create a Supabase project.
-2. Run `supabase/migrations/001_workspace.sql` in its SQL Editor. It creates one JSONB workspace per authenticated user with RLS policies. No service-role key is needed or allowed in client code.
-3. Set these variables in Vercel for the intended deployment environments:
-   - `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL.
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: public anon/publishable key.
-4. In Supabase Authentication URL Configuration, set the Site URL to your production origin and allow that exact redirect origin (and `http://localhost:3000` for local development).
-5. Enable email authentication, configure a production SMTP provider and appropriate Supabase auth rate limits. Redeploy after setting the environment variables.
-6. Export your existing device backup **before signing in**. Authenticated and guest workspaces are intentionally isolated. Sign in through Settings, then import the backup into your cloud workspace.
+## Provisioning
 
-Cloud saves debounce by 800 ms. Wait for “Synced to cloud” before switching devices. Concurrent changes from another device pause cloud writes instead of overwriting remote data. Export the local backup and reload to reconcile. This is whole-workspace optimistic locking, not real-time collaborative editing. A cloud outage retains a local copy and shows an error; it does not silently declare synchronization successful.
+1. Apply `supabase/migrations/001_workspace.sql`, then `002_assessments_and_runner.sql` to a dedicated Supabase project.
+2. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in the intended Vercel environments.
+3. Configure Supabase Site URL and allowed redirects for the exact production origin and local development origin. Keep email verification enabled. Built-in Supabase mail has provider limits; configure your own SMTP if broader usage is needed.
+4. Set `RUNNER_PROVIDER=vercel` and `RUNNER_SNAPSHOT_ID` to a prepared toolchain snapshot. Sandbox calls authenticate using deployment OIDC, not a client token.
+5. The build script `scripts/prepare-toolchain.mjs` promotes an expiring bootstrap snapshot into a non-expiring deny-all snapshot using the SDK and records its ID in the build-local, ignored `lib/toolchain.generated.json`. After the first deployment, point the Vercel variable at that non-expiring snapshot for future builds. Snapshot IDs are configuration, not credentials.
+6. Build, deploy, then verify real sign-in → cloud save → reload → authenticated simulation → persisted history. Do not infer live operation solely from the presence of source code.
 
-## Code execution
+## Tests and verification
 
-**No code runs in the Next.js server process.** Without a configured runner, Run simulation returns an explicit 503 explaining that execution is unavailable. Code submissions remain Needs review or Self-assessed. Quiz scoring is distinct from simulation.
+`pnpm test` covers complete roadmap assessment reachability, practical requirements, quiz scoring, device/cloud import conflict behavior, backup validation, VCD parsing and evidence-based streaks. The toolchain was separately checked against all 20 reference contracts, incorrect RTL/Python mutations and a Verilator regression. See `CHANGELOG.md` and the delivered verification report for release evidence and limitations.
 
-To enable a runner, deploy a separately isolated service and set server-only `RUNNER_URL` and `RUNNER_TOKEN`. The `/api/run` route authenticates with Supabase, limits request size, permits only registered exercise/language pairs, enforces a timeout and forwards an authenticated JSON request:
+## Scope
 
-```json
-{"userId":"uuid","exerciseId":"counter","language":"verilog","source":"..."}
-```
-
-The runner must return `{ "passed": true, "output": "actual test logs" }` only after actual execution against trusted tests. It is responsible for per-user rate limits, a bounded queue, CPU/RAM/disk/time limits, network isolation, non-root containers and fixed server-owned public/hidden testbenches. Never trust tests supplied by a learner. The repository includes `runner/README.md` as the integration contract, not a falsely working execution service.
-
-## Deployment
-
-Import `24161090-ship-it/siliconpath` into Vercel. Framework: Next.js; repository root is the application root. The linked Git integration deploys changes from `main`. Device mode works without environment variables. Optional cloud setup is described above.
-
-## Data and assessment semantics
-
-- Initial missions are suggested planned tasks, all incomplete; they are not claimed accomplishments.
-- Checking a task does not add estimated minutes to actual study time.
-- Reading a lesson does not establish mastery. Mastery requires both reading and a Passed linked assessment. Self-assessments never count as an automated pass.
-- Project readiness checklists and evidence are explicitly self-reported. Internship readiness is not assigned an invented score.
-- Notes are rendered as sanitized Markdown without raw HTML. Exported portfolio fields are HTML-escaped and repository links allow only HTTPS GitHub URLs.
-- The content studio changes only the current user's curriculum. It is not a site-wide administrator role.
-- Email, code and notes appear only in the user's own workspace and exported files; the shipped repository has no learner records or secrets.
-
-## Stack
-
-Next.js App Router, React, TypeScript, CSS custom properties, Lucide icons, Monaco Editor, React Markdown/KaTeX and Supabase. Fonts load from Google Fonts; Monaco's default loader uses its CDN and requires browser network access.
+This release does not claim autonomous AI tutoring, OAuth GitHub synchronization, hosted shared portfolios, object-storage attachments, Google Calendar integration or community accounts. The existing public GitHub repository check is read-only. Personal content edits belong to the current workspace.

@@ -1,10 +1,13 @@
 export type Track = 'Foundation'|'RTL Design'|'Programming'|'Design Verification'|'Advanced Applications';
-export type Lesson = {id:string;title:string;track:Track;minutes:number;prerequisites:string[];body:string;exerciseId?:string};
+export type Lesson = {id:string;title:string;track:Track;minutes:number;prerequisites:string[];body:string;exerciseId?:string;assessmentIds?:string[]};
 export type Exercise = {id:string;title:string;track:Track;difficulty:'Beginner'|'Intermediate'|'Advanced';kind:'Theory'|'Coding'|'Debugging'|'Verification';minutes:number;description:string;objectives:string[];specs:string[];tests:string[];hints:string[];solution:string;language:'verilog'|'systemverilog'|'python'|'cpp';starter:string;quiz?:{question:string;options:string[];answer:number;explanation:string}[]};
 export type Task = {id:string;title:string;category:string;minutes:number;date:string;done:boolean;exerciseId?:string};
 export type Note = {id:string;title:string;body:string;tags:string;kind:'Note'|'Mistake Journal'|'Flashcard';updated:string};
-export type Submission = {id:string;exerciseId:string;date:string;status:'Passed'|'Needs review'|'Self-assessed'|'Failed';source:string;output:string;score?:number;evidence?:string};
-export type Project = {id:string;title:string;description:string;level:string;repo:string;checks:string[];evidence:string;featured:boolean;created:string};
+export type Submission = {id:string;exerciseId:string;date:string;status:'Passed'|'Needs review'|'Self-assessed'|'Failed';source:string;output:string;score?:number;evidence?:string;engine?:string;runId?:string;sourceHash?:string;testResults?:{name:string;passed:boolean}[];waveform?:string};
+export type ProjectMilestone={id:string;title:string;date:string;done:boolean};
+export type ProjectBug={id:string;title:string;severity:'Low'|'Medium'|'High';status:'Open'|'Investigating'|'Fixed';notes:string};
+export type ProjectTest={id:string;requirement:string;scenario:string;expected:string;actual:string;status:'Not run'|'Passed'|'Failed';evidence:string};
+export type Project = {id:string;title:string;description:string;level:string;repo:string;checks:string[];evidence:string;featured:boolean;created:string;milestones?:ProjectMilestone[];bugs?:ProjectBug[];tests?:ProjectTest[];architecture?:string;coverage?:{metric:string;covered:number;total:number;evidence:string}[]};
 export type SessionLog = {id:string;date:string;minutes:number;topic:string};
 export type Application = {id:string;company:string;role:string;status:'Preparing'|'Applied'|'Interview'|'Offer'|'Rejected';date:string;notes:string};
 export type WorkspaceData = {version:1;profile:{name:string;headline:string;goal:string;dailyMinutes:number;email:string;education:string;skills:string};tasks:Task[];notes:Note[];submissions:Submission[];projects:Project[];sessions:SessionLog[];applications:Application[];readLessons:string[];drafts:Record<string,string>;customLessons:Lesson[];customExercises:Exercise[];hiddenLessons:string[];hiddenExercises:string[];interviews:Record<string,string>;theme:'dark'|'light';activeExercise:string;timer:{endsAt:number|null;remaining:number;topic:string}};
